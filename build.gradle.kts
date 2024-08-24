@@ -5,10 +5,10 @@ plugins {
 }
 
 group = "com.sslabs.gradle-dist"
-version = "8.6-1.0"
+version = "8.10-1.0"
 
 tasks.wrapper {
-    gradleVersion = "8.6"
+    gradleVersion = "8.10"
     distributionType = BIN
 }
 

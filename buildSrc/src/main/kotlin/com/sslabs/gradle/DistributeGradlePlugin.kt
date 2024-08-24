@@ -7,9 +7,9 @@ import org.gradle.api.distribution.plugins.DistributionPlugin
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.wrapper.Wrapper.DistributionType
-import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.*
+import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.ALL
+import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.BIN
 import org.gradle.kotlin.dsl.register
-import java.net.URI
 
 open class DistributeGradlePlugin : Plugin<Project> {
 
@@ -20,33 +20,53 @@ open class DistributeGradlePlugin : Plugin<Project> {
     }
 
     private fun Project.configureTasks() {
+        val releaser = registerDraftTask()
+
         val downloaderBin = registerDownloadTask(BIN)
         val packagerBin = registerPackageTask(BIN, downloaderBin)
         val checksumBin = registerChecksumTask(BIN, packagerBin)
-        val publishBin = registerPublishTask(BIN, packagerBin, checksumBin)
+        val uploaderBin = registerUploadTask(BIN, packagerBin, checksumBin, releaser)
 
         val downloaderAll = registerDownloadTask(ALL)
         val packagerAll = registerPackageTask(ALL, downloaderAll)
         val checksumAll = registerChecksumTask(ALL, packagerAll)
-        val publishAll = registerPublishTask(ALL, packagerAll, checksumAll)
+        val uploaderAll = registerUploadTask(ALL, packagerAll, checksumAll, releaser)
 
         tasks.register<Task>("publish") {
             description = "Publishes the Gradle distributions to Space"
             group = "publishing"
 
-            dependsOn(publishBin, publishAll)
+            dependsOn(uploaderBin, uploaderAll)
         }
     }
 
-    private fun Project.registerPublishTask(dist: DistributionType, packager: TaskProvider<Zip>, checksum: TaskProvider<ChecksumGradleTask>): TaskProvider<PublishGradleTask> {
+    private fun Project.registerDraftTask(): TaskProvider<DraftReleaseTask> {
+        return tasks.register<DraftReleaseTask>("draftRelease") {
+            val projectVersion = project.version.toString()
+            version.set(projectVersion)
+
+            val tempFile = project.layout.buildDirectory.asFile.map { it.resolve("tmp/gradle/release.json") }
+            releaseFile.set(tempFile)
+        }
+    }
+
+    private fun Project.registerUploadTask(
+        dist: DistributionType,
+        packager: TaskProvider<Zip>,
+        checksum: TaskProvider<ChecksumGradleTask>,
+        releaser: TaskProvider<DraftReleaseTask>
+    ): TaskProvider<UploadGradleTask> {
         val distTitle = dist.toTitleCase()
 
-        return tasks.register<PublishGradleTask>("publishGradle$distTitle") {
+        return tasks.register<UploadGradleTask>("uploadGradle$distTitle") {
             val packagerDestination = packager.flatMap { it.archiveFile }.map { it.asFile }
             packageFile.set(packagerDestination)
 
             val checksumDestination = checksum.flatMap { it.destinationFile }
             checksumFile.set(checksumDestination)
+
+            val releaseDestination = releaser.flatMap { it.releaseFile }
+            releaseFile.set(releaseDestination)
         }
     }
 
@@ -96,8 +116,8 @@ open class DistributeGradlePlugin : Plugin<Project> {
             val downloadUrl = "https://services.gradle.org/distributions/$distFile"
             source.set(downloadUrl)
 
-            val tempDir = project.layout.buildDirectory.asFile.map { it.resolve("tmp/gradle/$distFile") }
-            destinationFile.set(tempDir)
+            val tempFile = project.layout.buildDirectory.asFile.map { it.resolve("tmp/gradle/$distFile") }
+            destinationFile.set(tempFile)
         }
     }
 

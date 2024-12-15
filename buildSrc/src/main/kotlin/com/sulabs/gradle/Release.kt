@@ -1,4 +1,4 @@
-package com.sslabs.gradle
+package com.sulabs.gradle
 
 import kotlinx.serialization.Serializable
 

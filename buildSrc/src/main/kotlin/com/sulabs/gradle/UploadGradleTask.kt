@@ -1,4 +1,4 @@
-package com.sslabs.gradle
+package com.sulabs.gradle
 
 import kotlinx.serialization.json.Json
 import org.gradle.api.DefaultTask
@@ -66,6 +66,6 @@ abstract class UploadGradleTask : DefaultTask() {
     }
 
     companion object {
-        private const val UPLOAD_URL = "https://uploads.github.com/repos/sssv-home/sslabs-gradle-dist"
+        private const val UPLOAD_URL = "https://uploads.github.com/repos/sssv-home/sulabs-gradle-dist"
     }
 }

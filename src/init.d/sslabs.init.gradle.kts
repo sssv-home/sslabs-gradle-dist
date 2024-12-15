@@ -1,8 +1,8 @@
 
-apply<SSLabsPlugin>()
+apply<SuLabsPlugin>()
 
 @Suppress("UnstableApiUsage")
-class SSLabsPlugin : Plugin<Gradle> {
+class SuLabsPlugin : Plugin<Gradle> {
 
     override fun apply(target: Gradle) {
         target.beforeSettings {

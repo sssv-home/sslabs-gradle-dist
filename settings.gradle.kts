@@ -1,1 +1,1 @@
-rootProject.name = "sslabs-gradle-dist"
+rootProject.name = "sulabs-gradle-dist"

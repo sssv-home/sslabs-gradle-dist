@@ -4,8 +4,8 @@ plugins {
     `distribute-gradle`
 }
 
-group = "com.sslabs.gradle-dist"
-version = "8.10-1.0"
+group = "com.sulabs.gradle-dist"
+version = "8.10-2.0"
 
 tasks.wrapper {
     gradleVersion = "8.10"

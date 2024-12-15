@@ -1,4 +1,4 @@
-package com.sslabs.gradle
+package com.sulabs.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -93,7 +93,7 @@ open class DistributeGradlePlugin : Plugin<Project> {
             description = "Packages a customized Gradle distribution"
             group = "distribution"
 
-            archiveBaseName.set("sslabs-gradle")
+            archiveBaseName.set("sulabs-gradle")
             archiveVersion.set(versionString)
             archiveClassifier.set(distString)
 

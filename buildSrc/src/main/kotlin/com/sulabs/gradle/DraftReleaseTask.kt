@@ -1,4 +1,4 @@
-package com.sslabs.gradle
+package com.sulabs.gradle
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -75,6 +75,6 @@ abstract class DraftReleaseTask : DefaultTask() {
     )
 
     companion object {
-        private const val API_URL = "https://api.github.com/repos/sssv-home/sslabs-gradle-dist"
+        private const val API_URL = "https://api.github.com/repos/sssv-home/sulabs-gradle-dist"
     }
 }

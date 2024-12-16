@@ -1,1 +1,1 @@
-# sslabs-gradle-dist
+# Gradle Distribution
